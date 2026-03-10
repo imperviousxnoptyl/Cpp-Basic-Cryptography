@@ -4,6 +4,3 @@
 - Bazeries Cipher
 - Nihilist Cipher
 - Polybius Cipher
-
-### Bash Programs
-- File Integrity Checker
