@@ -39,16 +39,16 @@ string textFormatting (const string& str) {
 }
 
 string contFormatting(vector<unsigned char>& str) {
-    string digraphsRearranged = ""; //Step 1: Convert to capital letters and handling non-alphabetical characters
+    string digraphsRearranged = "";
     string result = "";
     for (char ch : str) {
         if (isalpha(ch)) {
             ch = toupper(ch);
-            if (ch == 'J') ch = 'I'; //Normalise J to I in plaintext
+            if (ch == 'J') ch = 'I';
             digraphsRearranged += ch;
         }
     }
-    for (size_t i = 0; i < digraphsRearranged.length(); ) { //Following the rule of no repeated letters in a digraph
+    for (size_t i = 0; i < digraphsRearranged.length(); ) {
         char c1 = digraphsRearranged[i];
         char c2;
         if (digraphsRearranged.length() > i + 1) 
@@ -66,7 +66,7 @@ string contFormatting(vector<unsigned char>& str) {
             i += 2; //move to next digraph
         }
     }
-    if (result.length() % 2 != 0) { //Completes a digraph if the plaintext has an odd number of letters
+    if (result.length() % 2 != 0) {
         result += 'Z';
     }
     return result;
