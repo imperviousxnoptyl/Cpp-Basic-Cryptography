@@ -202,7 +202,7 @@ void decryptFlow(string& str, string& key) {
 bool checkFileExtension(const string& file_name) {
     vector<string> valid_file_exts = {".txt", ".rtf", ".doc", ".docx", ".csv"};
     for (const string& file_ext : valid_file_exts) {
-        if (filename.find(file_ext) != string::npos) { //If match found:
+        if (file_name.find(file_ext) != string::npos) { //If match found:
             return true;
         }
     }
@@ -210,7 +210,7 @@ bool checkFileExtension(const string& file_name) {
 }
 
 vector<unsigned char> readf(const string& file_name) {
-    ifstream file(filename, ios::binary); //makes sure contents in the file is read or written without translating newline to and from \r\n
+    ifstream file(file_name, ios::binary); //makes sure contents in the file is read or written without translating newline to and from \r\n
     vector<unsigned char> tmp((istreambuf_iterator<char>(file)), istreambuf_iterator<char>()); //stores data from file one by one
     return tmp; 
 }
