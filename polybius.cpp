@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <sstream>
 using namespace std;
-//UNFINISHED: I will the decryption codes later...
 
 const char alphabet_grid[5][5] = {{'A', 'B', 'C', 'D', 'E'}, {'F', 'G', 'H', 'I', 'K'}, {'L', 'M', 'N', 'O', 'P'}, {'Q', 'R', 'S', 'T', 'U'}, {'V', 'W', 'X', 'Y', 'Z'}};
 
@@ -33,6 +33,18 @@ void polybiusEncryptStr(string& str) {
             }
         }
     }
+}
+
+string polybiusDecryptStr(const string& str) {
+    stringstream num_to_str(str);
+    string original_letter;
+    string decrypted = "";
+    while (num_to_str >> original_letter) { //num_to_str = num_to_str/(2^original_letter) to convert two digits to one letter
+        int r = original_letter[0] - '1';
+        int c = original_letter[1] - '1'; //reverts to original index based on the alphabet_grid
+        decrypted += alphabet_grid[r][c];
+    }
+    return decrypted;
 }
 
 bool checkFileExtension(const string& filename) {
@@ -88,6 +100,22 @@ string polybiusEncryptCont(vector<unsigned char>& original_cont) {
     return encoded;
 }
 
+string polybiusDecryptCont(vector<unsigned char>& encrypted_cont) {
+    string str = "";
+    for (char ch : encrypted_cont) {
+        str += ch;
+    }
+    stringstream num_to_str(str);
+    string original_letter;
+    string decrypted = "";
+    while (num_to_str >> original_letter) { 
+        int r = original_letter[0] - '1';
+        int c = original_letter[1] - '1'; 
+        decrypted += alphabet_grid[r][c];
+    }
+    return decrypted;
+}
+
 void polybiusEncryptContFlow(string& fn) {
     ifstream file;
     cout << "Enter filename: ";
@@ -111,11 +139,34 @@ void polybiusEncryptContFlow(string& fn) {
     }
 }
 
+void polybiusDecryptContFlow(string& fn) {
+    ifstream file;
+    cout << "Enter filename: ";
+    cin.ignore();
+    getline(cin, fn);
+    file.open(fn);
+    if (checkFileExtension(fn)) {
+        if (file) {
+        vector<unsigned char> encrypted_cont = readf(fn);
+        string decrypted_cont = polybiusDecryptCont(encrypted_cont);
+        string output_file = "decrypted.txt";
+        encf(output_file, decrypted_cont);
+        cout << "Finished encrypting file contents." << endl;
+        } else {
+            cout << "ERROR: FILE DOES NOT EXIST.";
+            exit(-1);
+        }
+    } else {
+        cout << "ERROR: INVALID FILE NAME.";
+        exit(-1);
+    }
+}
+
 
 int main() {
     int choice;
     string fn, str;
-    cout << "Choose: \n 1) Encrypt String\n 2) Encrypt Text in File\n";
+    cout << "Choose: \n 1) Encrypt String\n 2) Encrypt Text in File\n 3) Decrypt String\n 4) Decrypt Contents in File\n";
     cin >> choice;
     switch (choice) {
         case 1:
@@ -123,6 +174,14 @@ int main() {
             break;
         case 2:
             polybiusEncryptContFlow(fn);
+            break;
+        case 3:
+            cout << "Enter encrypted text: ";
+            getline(cin, str);
+            cout << "Output: " << polybiusDecryptStr(str);
+            break;
+        case 4:
+            polybiusDecryptContFlow(fn);
             break;
         case 0:
             break;
