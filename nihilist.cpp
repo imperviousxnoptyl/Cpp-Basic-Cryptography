@@ -102,6 +102,16 @@ string nihilistDecryptStr(string& str, string& key, char char_table[5][5]) {
     return decrypted;
 }
 
+bool checkFileExtension(const string& filename) {
+    vector<string> validFileExtensions = {".txt", ".rtf", ".doc", ".docx", ".csv"};
+    for (const string& file_ext : validFileExtensions) {
+        if (filename.find(file_ext) != string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
 vector<unsigned char> readf(const string& file_name) {
     ifstream file(file_name, ios::binary);
     vector<unsigned char> tmp((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
@@ -167,5 +177,42 @@ string nihilistDecryptCont(vector<unsigned char>& str, string& key, char char_ta
 
 
 int main() {
-    //(implementation tomorrow...)
+    int choice;
+    char char_table[5][5];
+    string keyword, str, key;
+    cout << "Enter keyword: ";
+    getline(cin, keyword);
+    cout << "Enter string: ";
+    getline(cin, str);
+    cout << "Enter key: ";
+    getline(cin, key);
+    cout << "Choose: \n 1) Encrypt String\n 2) Encrypt Text in File\n 3) Decrypt String\n 4) Decrypt Contents in File\n";
+    cin >> choice;
+    switch(choice) {
+        case 1:
+            createNihilistMatrix(keyword, char_table);
+            polybiusOperation(str, char_table);
+            cout << nihilistEncryptStr(str, key, char_table);
+            break;
+        case 2:
+            createNihilistMatrix(keyword, char_table);
+            polybiusOperation(str, char_table);
+            cout << nihilistDecryptStr(str, key, char_table);
+            break;
+        case 3:
+            createNihilistMatrix(keyword, char_table);
+            polybiusOperation(str, char_table);
+            //unfinished
+            break;
+        case 4:
+            createNihilistMatrix(keyword, char_table);
+            polybiusOperation(str, char_table);
+            //unfinished
+            break;
+        default:
+            cout << "Invalid Selection" << endl;
+            main();
+
+    }
+    return 0;
 }
