@@ -30,6 +30,9 @@ void createNihilistMatrix(string& keyword, char char_table[5][5]) {
         }
     }
     for (char ch = 'A'; ch <= 'Z'; ch++) {
+        if (ch == 'J') {
+            continue;
+        }
         if (!isFilled[ch - 'A']) {
             isFilled[ch - 'A'] = true;
             char_table[r][c++] = ch;
@@ -260,6 +263,7 @@ int main() {
         default:
             cout << "Invalid Selection" << endl;
             main();
+            break;
     }
     return 0;
 }
