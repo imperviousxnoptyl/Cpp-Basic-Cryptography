@@ -50,7 +50,28 @@ vector<int> polybiusOperation(string& str, char char_table[5][5]) {
             if (ch == 'J') ch = 'I';
         }
     }
-    for (int i = 0; str[i]; i++) {
+    for (size_t i = 0; i < str.size(); i++) {
+        for (r = 0; r < 5; r++) {
+            for (c = 0; c < 5; c++) {
+                if (str[i] == char_table[r][c]) {
+                    str_to_nums.push_back(((r + 1) * 10) + (c + 1));
+                }
+            }
+        }
+    }
+    return str_to_nums;
+}
+
+vector<int> polybiusOperationCont(vector<unsigned char>& str, char char_table[5][5]) {
+    vector<int> str_to_nums;
+    int r, c;
+    for (unsigned char& ch : str) {
+        if (isalpha(ch)) {
+            ch = toupper(ch);
+            if (ch == 'J') ch = 'I';
+        }
+    }
+    for (size_t i = 0; i < str.size(); i++) {
         for (r = 0; r < 5; r++) {
             for (c = 0; c < 5; c++) {
                 if (str[i] == char_table[r][c]) {
@@ -83,15 +104,8 @@ string nihilistDecryptStr(string& str, string& key, char char_table[5][5]) {
     stringstream ss(str);
     vector<int>new_key = polybiusOperation(key, char_table);
     string decrypted;
-    for (size_t i = 0; i < str.length(); i++) {
-        if (isdigit(str[i])) {
-            while (ss >> var) {
-                int r = (var[0] - '0');
-                int c = (var[1] - '0');
-                int l = (r * 10) + c; //letter of string in original table
-                encrypted_str.push_back(l);
-            }
-        }
+    while (ss >> var) {
+        encrypted_str.push_back(stoi(var)); //previous method included whitespace
     }
     for (int i = 0; i < (int)encrypted_str.size(); i++) {
         int toclean = encrypted_str[i] - new_key[i % new_key.size()];
@@ -156,15 +170,8 @@ string nihilistDecryptCont(vector<unsigned char>& str, string& key, char char_ta
     stringstream ss(cont);
     vector<int>new_key = polybiusOperation(key, char_table);
     string decrypted;
-    for (size_t i = 0; i < cont.length(); i++) {
-        if (isdigit(cont[i])) {
-            while (ss >> var) {
-                int r = (var[0] - '0');
-                int c = (var[1] - '0');
-                int l = (r * 10) + c;
-                encrypted_str.push_back(l);
-            }
-        }
+    while (ss >> var) {
+        encrypted_str.push_back(stoi(var));
     }
     for (int i = 0; i < (int)encrypted_str.size(); i++) {
         int toclean = encrypted_str[i] - new_key[i % new_key.size()];
@@ -179,35 +186,76 @@ string nihilistDecryptCont(vector<unsigned char>& str, string& key, char char_ta
 int main() {
     int choice;
     char char_table[5][5];
-    string keyword, str, key;
+    string keyword, str, key, fn;
+    ifstream file;
     cout << "Enter keyword: ";
     getline(cin, keyword);
-    cout << "Enter string: ";
-    getline(cin, str);
     cout << "Enter key: ";
     getline(cin, key);
-    cout << "Choose: \n 1) Encrypt String\n 2) Encrypt Text in File\n 3) Decrypt String\n 4) Decrypt Contents in File\n";
+    cout << "Choose: \n 1) Encrypt String\n 2) Decrypt String \n 3) Encrypt Text in File\n 4) Decrypt Contents in File\n";
     cin >> choice;
     switch(choice) {
         case 1:
             createNihilistMatrix(keyword, char_table);
+            cout << "Enter string: ";
+            cin.ignore();
+            getline(cin, str);
             polybiusOperation(str, char_table);
             cout << nihilistEncryptStr(str, key, char_table);
             break;
         case 2:
             createNihilistMatrix(keyword, char_table);
+            cout << "Enter string: ";
+            cin.ignore();
+            getline(cin, str);
             polybiusOperation(str, char_table);
             cout << nihilistDecryptStr(str, key, char_table);
             break;
         case 3:
             createNihilistMatrix(keyword, char_table);
-            polybiusOperation(str, char_table);
-            //unfinished
+            cout << "Enter filename: ";
+            cin.ignore();
+            getline(cin, fn);
+            file.open(fn);
+            if (checkFileExtension(fn)) {
+                if (file) {
+                vector<unsigned char> original_cont = readf(fn);
+                polybiusOperationCont(original_cont, char_table);
+                string encoded_cont = nihilistEncryptCont(original_cont, key, char_table);
+                string output_file = "encoded.txt";
+                encf(output_file, encoded_cont);
+                cout << "Finished encrypting file contents." << endl;
+                } else {
+                    cout << "ERROR: FILE DOES NOT EXIST.";
+                    exit(-1);
+                }
+            } else {
+                cout << "ERROR: INVALID FILE NAME.";
+                exit(-1);
+            }
             break;
         case 4:
             createNihilistMatrix(keyword, char_table);
-            polybiusOperation(str, char_table);
-            //unfinished
+            cout << "Enter filename: ";
+            cin.ignore();
+            getline(cin, fn);
+            file.open(fn);
+            if (checkFileExtension(fn)) {
+                if (file) {
+                vector<unsigned char> encrypted_cont = readf(fn);
+                polybiusOperationCont(encrypted_cont, char_table);
+                string decrypted_cont = nihilistDecryptCont(encrypted_cont, key, char_table);
+                string output_file = "decrypted.txt";
+                encf(output_file, decrypted_cont);
+                cout << "Finished encrypting file contents." << endl;
+                } else {
+                    cout << "ERROR: FILE DOES NOT EXIST.";
+                    exit(-1);
+                }
+            } else {
+                cout << "ERROR: INVALID FILE NAME.";
+                exit(-1);
+    }
             break;
         default:
             cout << "Invalid Selection" << endl;
