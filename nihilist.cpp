@@ -55,7 +55,7 @@ vector<int> polybiusOperation(string& str, char char_table[5][5]) {
         for (r = 0; r < 5; r++) {
             for (c = 0; c < 5; c++) {
                 if (str[i] == char_table[r][c]) {
-                    str_to_nums.push_back(((r + 1) * 10) + (c + 1)); //problem here
+                    str_to_nums.push_back(((r + 1) * 10) + (c + 1));
                 }
             }
         }
