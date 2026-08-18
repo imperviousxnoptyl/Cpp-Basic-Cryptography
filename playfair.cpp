@@ -81,8 +81,8 @@ void createMatrix(string &key, char char_table[5][5]) {
     }
     for (char ch : key) {
         if (!letters[ch - 'A']) { //Prevents duplicates
-            letters[ch - 'A'] = true;
-            char_table[r][c++] = ch;
+            letters[ch - 'A'] = true; //if letter doesn't exist yet, mark it as true
+            char_table[r][c++] = ch; //then insert the character into char_table
             if (c == 5) { //5 columns but 1 row
                 c = 0; //Increase number of rows
                 r++; //Reset value of columns to 0
