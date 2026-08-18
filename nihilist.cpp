@@ -55,7 +55,7 @@ vector<int> polybiusOperation(string& str, char char_table[5][5]) {
         for (r = 0; r < 5; r++) {
             for (c = 0; c < 5; c++) {
                 if (str[i] == char_table[r][c]) {
-                    str_to_nums.push_back(((r + 1) * 10) + (c + 1));
+                    str_to_nums.push_back(((r + 1) * 10) + (c + 1)); //problem here
                 }
             }
         }
@@ -103,9 +103,6 @@ string nihilistEncryptStr(string& str, string& key, char char_table[5][5]) {
             new_key += ch;
         }
     }
-    for (int i : str_vec) {
-        cout << i << " ";
-    }
     cout << endl;
     vector<int> key_vec = polybiusOperation(new_key, char_table);
     ostringstream encrypted_text;
@@ -115,9 +112,6 @@ string nihilistEncryptStr(string& str, string& key, char char_table[5][5]) {
             encrypted_text << " ";
         }
         encrypted_text << encrypted;
-    }
-    for (int i : key_vec) {
-        cout << i << " ";
     }
     cout << endl;
     return encrypted_text.str();
