@@ -73,15 +73,15 @@ string contFormatting(vector<unsigned char>& str) {
 }
 
 void createMatrix(string &key, char char_table[5][5]) {
-    vector<bool> cells(26, false); //Contains the count for 26 letters, false because no entries yet
+    vector<bool> letters(26, false); //Contains the count for 26 letters, false because no entries yet
     int r = 0, c = 0;
     for (char& ch : key) { //Convert key to uppercase if needed
         ch = toupper(ch);
         if (ch == 'J') ch = 'I';
     }
     for (char ch : key) {
-        if (!cells[ch - 'A']) { //Prevents duplicates
-            cells[ch - 'A'] = true;
+        if (!letters[ch - 'A']) { //Prevents duplicates
+            letters[ch - 'A'] = true;
             char_table[r][c++] = ch;
             if (c == 5) { //5 columns but 1 row
                 c = 0; //Increase number of rows
@@ -91,8 +91,8 @@ void createMatrix(string &key, char char_table[5][5]) {
     }
     for (char ch = 'A'; ch <= 'Z'; ch++) { //Other characters...
         if (ch == 'J') continue;
-        if (!cells[ch - 'A']) {
-            cells[ch - 'A'] = true;
+        if (!letters[ch - 'A']) {
+            letters[ch - 'A'] = true;
             char_table[r][c++] = ch;
             if (c == 5) {
                 c = 0;
