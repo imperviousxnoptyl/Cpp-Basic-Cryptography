@@ -11,7 +11,7 @@ using namespace std;
 // This is basically Playfair + Polybius, but without the character wrapping rules
 
 void createNihilistMatrix(string& keyword, char char_table[5][5]) {
-    vector<bool> isFilled(26, false);
+    vector<bool> letters(26, false);
     int r = 0, c = 0;
     for (char& ch : keyword) {
         if (isalpha(ch)) {
@@ -20,8 +20,8 @@ void createNihilistMatrix(string& keyword, char char_table[5][5]) {
         }
     }
     for (char ch : keyword) {
-        if (!isFilled[ch - 'A']) {
-            isFilled[ch - 'A'] = true;
+        if (!letters[ch - 'A']) {
+            letters[ch - 'A'] = true;
             char_table[r][c++] = ch;
             if (c == 5) {
                 c = 0;
@@ -30,11 +30,9 @@ void createNihilistMatrix(string& keyword, char char_table[5][5]) {
         }
     }
     for (char ch = 'A'; ch <= 'Z'; ch++) {
-        if (ch == 'J') {
-            continue;
-        }
-        if (!isFilled[ch - 'A']) {
-            isFilled[ch - 'A'] = true;
+        if (ch == 'J') continue;
+        if (!letters[ch - 'A']) {
+            letters[ch - 'A'] = true;
             char_table[r][c++] = ch;
             if (c == 5) {
                 c = 0;
@@ -87,16 +85,41 @@ vector<int> polybiusOperationCont(vector<unsigned char>& str, char char_table[5]
 }
 
 string nihilistEncryptStr(string& str, string& key, char char_table[5][5]) {
-    vector<int> new_str = polybiusOperation(str, char_table);
-    vector<int> new_key = polybiusOperation(key, char_table);
+    string new_str = "";
+    string new_key = "";
+    int r, c;
+    for (char& ch : str) {
+        if (isalpha(ch)) {
+            ch = toupper(ch);
+            if (ch == 'J') ch = 'I';
+            new_str += ch;
+        }
+    }
+    vector<int> str_vec = polybiusOperation(new_str, char_table);
+    for (char& ch : key) {
+        if (isalpha(ch)) {
+            ch = toupper(ch);
+            if (ch == 'J') ch = 'I';
+            new_key += ch;
+        }
+    }
+    for (int i : str_vec) {
+        cout << i << " ";
+    }
+    cout << endl;
+    vector<int> key_vec = polybiusOperation(new_key, char_table);
     ostringstream encrypted_text;
     for (size_t i = 0; i < new_str.size(); i++) {
-        int encrypted = new_str[i] + new_key[i % new_key.size()];
+        int encrypted = str_vec[i] + key_vec[i % key_vec.size()];
         if (i > 0) {
             encrypted_text << " ";
         }
         encrypted_text << encrypted;
     }
+    for (int i : key_vec) {
+        cout << i << " ";
+    }
+    cout << endl;
     return encrypted_text.str();
 }
 
@@ -203,7 +226,6 @@ int main() {
             cout << "Enter string: ";
             cin.ignore();
             getline(cin, str);
-            polybiusOperation(str, char_table);
             cout << nihilistEncryptStr(str, key, char_table);
             break;
         case 2:
@@ -211,7 +233,6 @@ int main() {
             cout << "Enter string: ";
             cin.ignore();
             getline(cin, str);
-            polybiusOperation(str, char_table);
             cout << nihilistDecryptStr(str, key, char_table);
             break;
         case 3:
@@ -223,7 +244,6 @@ int main() {
             if (checkFileExtension(fn)) {
                 if (file) {
                 vector<unsigned char> original_cont = readf(fn);
-                polybiusOperationCont(original_cont, char_table);
                 string encoded_cont = nihilistEncryptCont(original_cont, key, char_table);
                 string output_file = "encoded.txt";
                 encf(output_file, encoded_cont);
@@ -246,7 +266,6 @@ int main() {
             if (checkFileExtension(fn)) {
                 if (file) {
                 vector<unsigned char> encrypted_cont = readf(fn);
-                polybiusOperationCont(encrypted_cont, char_table);
                 string decrypted_cont = nihilistDecryptCont(encrypted_cont, key, char_table);
                 string output_file = "decrypted.txt";
                 encf(output_file, decrypted_cont);
